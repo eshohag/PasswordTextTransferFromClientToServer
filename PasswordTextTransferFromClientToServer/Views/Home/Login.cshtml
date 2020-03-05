@@ -1,0 +1,97 @@
+﻿@model PasswordTextTransferFromClientToServer.Models.Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<h4>Registration & Login Secured for user</h4>
+<hr />
+<div class="row" style="text-align: center;">
+    <div class="col-md-6" style="border: 1px solid red;">
+        <form asp-action="Registration">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6" style="border: 1px solid red;">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoginPassword" class="control-label"></label>
+                <input asp-for="LoginPassword" class="form-control" type="password"/>
+                <span asp-validation-for="LoginPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <hr />
+    <div class="col-md-12" style="border: 1px solid green; margin-top: 5px; background-color: cadetblue; color: white; font-weight: bold;">
+        <label id="display"><strong>Original Password-</strong></label> <br />
+        <label id="hashDisplay">
+            <strong>Hash Password-</strong>
+        </label>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            $("#Password").keyup(function (event) {
+                debugger;
+                var pass = this.value;
+             var hash= encrypt(pass);
+                $("#Password").val(hash);
+            });
+
+            $("#LoginPassword").keyup(function (event) {
+                debugger;
+                var pass = this.value;
+                var hash= encrypt(pass);
+            });
+        });
+
+        function encrypt(pass) {
+            var display = document.getElementById("display");
+            var hashDisplay = document.getElementById("hashDisplay");
+            display.innerHTML = 'Original Password-' + pass;
+            if (pass == "") {
+                hashDisplay.innerHTML = "";
+                return "";
+            } else {
+                var hash = CryptoJS.MD5(pass);
+                hashDisplay.innerHTML = 'Hash Password-' +hash;
+            }
+            return hash;
+        }
+    </script>
+}
